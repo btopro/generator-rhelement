@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc.
+ * Copyright <%= year %> <%= copyrightOwner %>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,9 +20,9 @@
  * SOFTWARE.
  */
 
-import RHElement from "../rhelement/rhelement.js";
+import { html, PolymerElement } from '@polymer/polymer/polymer-element.js';
 
-class <%= elementClassName %> extends RHElement {
+class <%= elementClassName %> extends <%= customElementClass %> {
   static get tag() {
     return "<%= elementName %>";
   }
@@ -39,6 +39,15 @@ class <%= elementClassName %> extends RHElement {
 <%_ } _%>
   }
 
+  static get properties() {
+    return {
+      title: {
+        type: String,
+        value: "<%= elementName %>",
+      },
+    };
+  }
+
   // static get observedAttributes() {
   //   return [];
   // }
@@ -46,14 +55,22 @@ class <%= elementClassName %> extends RHElement {
   constructor() {
     super(<%= elementClassName %>.tag);
   }
+  /**
+   * life cycle, element is removed from the DOM
+   */
+  disconnectedCallback() {
 
-  // connectedCallback() {
-  //   super.connectedCallback();
-  // }
+  }
+  
+  /**
+   * life cycle, element is afixed to the DOM
+   */
+  connectedCallback() {
+    super.connectedCallback();
+  }
 
   // disconnectedCallback() {}
 
   // attributeChangedCallback(attr, oldValue, newValue) {}
 }
-
-RHElement.create(<%= elementClassName %>);
+window.customElements.define(<%= elementClassName %>.tag, <%= elementClassName %>);

@@ -16,12 +16,45 @@ module.exports = class extends Generator {
       {
         type: "input",
         name: "author",
-        message: "Author name"
+        message: "Author name",
+        store: true
+      },
+      {
+        type: "input",
+        name: "copyrightOwner",
+        message: "Copyright owner",
+        store: true,
+        default: "Red Hat, Inc."
+      },
+      {
+        type: "list",
+        name: "customElementClass",
+        message: "What custom element base are you building from?",
+        store: true,
+        choices: [
+          {
+            name: "VanillaJS, pure HTMLElement",
+            value: "HTMLElement"
+          },
+          {
+            name: "RHElement",
+            value: "RHElement"
+          },
+          {
+            name: "LitElement",
+            value: "LitElement"
+          },
+          {
+            name: "Polymer (3)",
+            value: "PolymerElement"
+          }
+        ]
       },
       {
         type: "list",
         name: "useSass",
         message: "Do you want to use Sass with this element?",
+        store: true,
         choices: [
           {
             name: "Yes",
@@ -58,9 +91,12 @@ module.exports = class extends Generator {
       let name = answers.name.split("-")[1];
 
       this.props = {
+        year: new Date().getFullYear(),
         author: answers.author,
+        copyrightOwner: answers.copyrightOwner,
         name: answers.name,
         elementName: answers.name,
+        customElementClass: answers.customElementClass,
         elementClassName: _.chain(answers.name)
           .camelCase()
           .upperFirst()
@@ -96,7 +132,7 @@ module.exports = class extends Generator {
     );
 
     this.fs.copyTpl(
-      this.templatePath("src/element.js"),
+      this.templatePath(`src/${this.props.customElementClass}.js`),
       this.destinationPath(
         `${this.props.elementName}/src/${this.props.elementName}.js`
       ),
