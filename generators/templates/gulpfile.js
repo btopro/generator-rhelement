@@ -76,10 +76,10 @@ gulp.task("merge", () => {
 
         return `${classStatement}
   <%= templateReturnFunctionPart %>\`
-  <style>
-    ${cssResult}
-  </style>
-  ${html}\`;
+<style>
+${cssResult}
+</style>
+${html}\`;
   }
 `;
       })
