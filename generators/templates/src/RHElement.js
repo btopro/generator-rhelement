@@ -30,36 +30,47 @@ import RHElement from "../rhelement/rhelement.js";
  * @demo demo/index.html
  */
 class <%= elementClassName %> extends <%= customElementClass %> {
+
+  /**
+   * Store the tag name to make it easier to obtain directly.
+   */
   static get tag() {
     return "<%= elementName %>";
   }
-
+  /**
+   * A file that contains the HTML template for the element.
+   */
   get templateUrl() {
     return "<%= elementName %>.html";
   }
-
-  get styleUrl() {
-<%_ if (useSass) { _%>
-    return "<%= elementName %>.scss";
-<%_ } else { _%>
-    return "<%= elementName %>.css";
-<%_ } _%>
+  /**
+   * A file that contains the properties that will be wired into this element.
+   */
+  get propertiesUrl() {
+    return "<%= elementName %>-properties.json";
   }
-
-  // static get observedAttributes() {
-  //   return [];
-  // }
+  /**
+   * A file that contains the css for this element to be mixed into the html block.
+   */
+  get styleUrl() {
+  <%_ if (useSass) { _%>
+    return "<%= elementName %>.scss";
+  <%_ } else { _%>
+    return "<%= elementName %>.css";
+  <%_ } _%>
+  }
 
   constructor() {
     super(<%= elementClassName %>.tag);
   }
 
+  // static get observedAttributes() {
+  //   return [];
+  // }
   // connectedCallback() {
   //   super.connectedCallback();
   // }
-
   // disconnectedCallback() {}
-
   // attributeChangedCallback(attr, oldValue, newValue) {}
 }
 

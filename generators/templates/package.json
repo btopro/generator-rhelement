@@ -5,7 +5,7 @@
     "elementName": "<%= elementName %>"
   },
   "version": "0.0.1",
-  "description": "<%= readmeName %> element for RHElements",
+  "description": "<%= readmeName %> element for <%= customElementClass %>",
   "repository": {
     "type": "git",
     "url": ""

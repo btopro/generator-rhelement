@@ -42,36 +42,33 @@ class <%= elementClassName %> extends <%= customElementClass %> {
       this.render();
     }
   }
-
+  /**
+   * Store the tag name to make it easier to obtain directly.
+   */
   static get tag() {
     return "<%= elementName %>";
   }
-
+  /**
+   * A file that contains the HTML template for the element.
+   */
   get templateUrl() {
     return "<%= elementName %>.html";
   }
-
-  get styleUrl() {
-<%_ if (useSass) { _%>
-    return "<%= elementName %>.scss";
-<%_ } else { _%>
-    return "<%= elementName %>.css";
-<%_ } _%>
-  }
-  
-
-  static get observedAttributes() {
-    return [];
+  /**
+   * A file that contains the properties that will be wired into this element.
+   */
+  get propertiesUrl() {
+    return "<%= elementName %>-properties.json";
   }
   /**
-   * life cycle, element is removed from the DOM
+   * A file that contains the css for this element to be mixed into the html block.
    */
-  disconnectedCallback() {
-
-  }
-
-  attributeChangedCallback(attr, oldValue, newValue) {
-
+  get styleUrl() {
+  <%_ if (useSass) { _%>
+    return "<%= elementName %>.scss";
+  <%_ } else { _%>
+    return "<%= elementName %>.css";
+  <%_ } _%>
   }
   /**
    * life cycle, element is afixed to the DOM
@@ -118,8 +115,13 @@ class <%= elementClassName %> extends <%= customElementClass %> {
     if (window.ShadyCSS) {
       window.ShadyCSS.prepareTemplate(this.template, this.tag);
     }
-
     this.shadowRoot.appendChild(this.template.content.cloneNode(true));
   }
+
+  //static get observedAttributes() {
+  //  return [];
+  //}
+  // disconnectedCallback() {}
+  // attributeChangedCallback(attr, oldValue, newValue) {}
 }
 window.customElements.define(<%= elementClassName %>.tag, <%= elementClassName %>);

@@ -31,41 +31,43 @@ import { html, PolymerElement } from '@polymer/polymer/polymer-element.js';
  * @demo demo/index.html
  */
 class <%= elementClassName %> extends <%= customElementClass %> {
+  /**
+   * Store the tag name to make it easier to obtain directly.
+   */
   static get tag() {
     return "<%= elementName %>";
   }
-
+  /**
+   * A file that contains the HTML template for the element.
+   */
   get templateUrl() {
     return "<%= elementName %>.html";
   }
-
-  get styleUrl() {
-<%_ if (useSass) { _%>
-    return "<%= elementName %>.scss";
-<%_ } else { _%>
-    return "<%= elementName %>.css";
-<%_ } _%>
+  /**
+   * A file that contains the properties that will be wired into this element.
+   */
+  get propertiesUrl() {
+    return "<%= elementName %>-properties.json";
   }
-
-  static get properties() {
-    return {
-      title: {
-        type: String,
-        value: "<%= elementName %>",
-      },
-    };
+  /**
+   * A file that contains the css for this element to be mixed into the html block.
+   */
+  get styleUrl() {
+  <%_ if (useSass) { _%>
+    return "<%= elementName %>.scss";
+  <%_ } else { _%>
+    return "<%= elementName %>.css";
+  <%_ } _%>
   }
   /**
    * life cycle, element is afixed to the DOM
    */
-  connectedCallback() {
-    super.connectedCallback();
-  }
+  //connectedCallback() {
+  //  super.connectedCallback();
+  //}
   /**
    * life cycle, element is removed from the DOM
    */
-  disconnectedCallback() {
-
-  }
+  //disconnectedCallback() {}
 }
 window.customElements.define(<%= elementClassName %>.tag, <%= elementClassName %>);

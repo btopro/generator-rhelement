@@ -32,23 +32,36 @@ import { LitElement, html, property } from '@polymer/lit-element';
 class <%= elementClassName %> extends <%= customElementClass %> {
 
   // Public property API that triggers re-render (synced with attributes)
-  @property({ type: String })
-  title = "<%= elementName %>";
+  //@property({ type: String })
+  //title = "<%= elementName %>";
 
+  /**
+   * Store the tag name to make it easier to obtain directly.
+   */
   tag() {
     return "<%= elementName %>";
-  },
-
+  }
+  /**
+   * A file that contains the HTML template for the element.
+   */
   templateUrl() {
     return "<%= elementName %>.html";
   }
-
+  /**
+   * A file that contains the properties that will be wired into this element.
+   */
+  propertiesUrl() {
+    return "<%= elementName %>-properties.json";
+  }
+  /**
+   * A file that contains the css for this element to be mixed into the html block.
+   */
   styleUrl() {
-  <% _ if (useSass) { _ %>
+  <%_ if (useSass) { _%>
     return "<%= elementName %>.scss";
-  <% _ } else { _ %>
+  <%_ } else { _%>
     return "<%= elementName %>.css";
-  <% _ } _ %>
+  <%_ } _%>
   }
 
   // static get observedAttributes() {
