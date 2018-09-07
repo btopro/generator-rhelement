@@ -54,16 +54,25 @@ gulp.task("merge", () => {
           .trim();
 
         html = decomment(html);
+        // pull properties off of the file location
+        const [
+          ,
+          propertiesUrl
+        ] = /propertiesUrl\([^)]*\)\s*{\s*return\s+"([^"]+)"/.exec(
+          oneLineFile
+        );
+        let props = fs
+          .readFileSync(path.join("./src", propertiesUrl));
+        props = stripCssComments(props).trim();
 
+        // pull together styles from url
         const [
           ,
           styleUrl
         ] = /styleUrl\([^)]*\)\s*{\s*return\s+"([^"]+)"/.exec(
           oneLineFile
         );
-
         const styleFilePath = path.join("./src", styleUrl);
-
 <%_ if (useSass) { _%>
         let cssResult = sass.renderSync({
           file: styleFilePath
@@ -71,9 +80,7 @@ gulp.task("merge", () => {
 <%_ } else { _%>
         let cssResult = fs.readFileSync(styleFilePath);
 <%_ } _%>
-
         cssResult = stripCssComments(cssResult).trim();
-
         return `${classStatement}
   <%= templateReturnFunctionPart %>\`
 <style>
@@ -81,7 +88,9 @@ ${cssResult}
 </style>
 ${html}\`;
   }
-`;
+  static get properties() {
+    return ${props};
+  }`;
       })
     )
     .pipe(gulp.dest("./"));

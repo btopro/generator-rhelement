@@ -233,9 +233,11 @@ module.exports = class extends Generator {
         name: answers.name,
         elementName: answers.name,
         addProps: answers.addProps,
-        propsList: answers.propsList,
-        propsListString: JSON.stringify(answers.propsList, null, '  '),
+        propsListRaw: answers.propsList,
+        propsList: {},
+        propsListString: '',
         storyPropDeclaration: '',
+        propsBindingFactory: '',
         storyHTMLProps: '',
         customElementClass: answers.customElementClass,
         elementClassName: _.chain(answers.name)
@@ -250,25 +252,51 @@ module.exports = class extends Generator {
         sassLibraryPath: false,
         generatorRhelementVersion: packageJson.version
       };
-      // generate a string that can pull together the values needed for an HTML string
-      _.forEach(this.props.propsList, (prop) => {
-        this.props.storyPropDeclaration += '  const ' + prop.name + ' = text("' + prop.name + '", "' + prop.value + '");' + "\n";
+      _.forEach(this.props.propsListRaw, (prop) => {
+        this.props.propsList[prop.name] = prop;
       });
-      _.forEach(this.props.propsList, (prop) => {
+      this.props.propsListString = JSON.stringify(this.props.propsList, null, '  ')
+      // generate a string that can pull together the values needed for an HTML string
+      _.forEach(this.props.propsListRaw, (prop) => {
+        let method = 'text';
+        // figure out the method to use as a knob
+        switch (prop.type) {
+          case 'Boolean':
+          case 'Number':
+          case 'Object':
+          case 'Array':
+          case 'Date':
+            method = prop.type.toLowerCase();
+          break;
+          default: 
+            method = 'text';
+          break;
+        }
+        this.props.storyPropDeclaration += '  const ' + prop.name + ' = ' + method + '("' + prop.name + '", "' + prop.value + '");' + "\n";
+      });
+      _.forEach(this.props.propsListRaw, (prop) => {
         this.props.storyHTMLProps += _.kebabCase(prop.name) + '="${' + prop.name + '}"; ';
       });
       // mix in the template output related to customElementClass
       switch (answers.customElementClass) {
-        case 'LitElement':
-          this.props.templateReturnFunctionPart = "render() {\n    return html";
-        break;
         case 'PolymerElement':
           this.props.templateReturnFunctionPart = "static get template() {\n    return html";
+          _.forEach(this.props.propsListRaw, (prop) => {
+            this.props.propsBindingFactory += '<div>[[' + prop.name + ']]</div>' + "\n";
+          });
         break;
+        case 'LitElement':
+          this.props.templateReturnFunctionPart = "render() {\n    return html";
+          _.forEach(this.props.propsListRaw, (prop) => {
+            this.props.propsBindingFactory += '<div>${this.' + prop.name + '}</div>' + "\n";
+          });
+          break;
         case 'HTMLElement':
         case 'RHElement':
         default:
           this.props.templateReturnFunctionPart = "get html() {\n    return ";
+          // vanilla element factories do not have native prop binding
+          // maybe someday :(
         break;
       }
       if (answers.useSass) {
@@ -280,7 +308,7 @@ module.exports = class extends Generator {
           this.props.sassLibraryPath = answers.sassLibrary.path;
         }
       }
-
+      console.log(this.props.propsBindingFactory);
       mkdirp.sync(this.props.elementName);
     });
   }
@@ -381,9 +409,10 @@ module.exports = class extends Generator {
       )
     }
 
-    this.fs.copy(
+    this.fs.copyTpl(
       this.templatePath("src/element.html"),
-      this.destinationPath(`${this.props.elementName}/src/${this.props.elementName}.html`)
+      this.destinationPath(`${this.props.elementName}/src/${this.props.elementName}.html`),
+      this.props
     );
   }
 
