@@ -1,4 +1,5 @@
 const Generator = require("yeoman-generator");
+const recursive = require('inquirer-recursive');
 const _ = require("lodash");
 const mkdirp = require("mkdirp");
 const path = require("path");
@@ -6,12 +7,19 @@ const process = require("process");
 const packageJson = require("../package.json");
 
 module.exports = class extends Generator {
+  initializing() {
+    this.env.adapter.promptModule.registerPrompt('recursive', recursive);
+  }
   prompting() {
     return this.prompt([
       {
         type: "input",
         name: "name",
-        message: "Your element name"
+        message: "Your element name",
+        validate: function (value) {
+          if ((/([a-z]*)-([a-z]*)/).test(value)) { return true; }
+          return 'name requires a hyphen and all lowercase';
+        }
       },
       {
         type: "input",
@@ -28,25 +36,22 @@ module.exports = class extends Generator {
       },
       {
         type: "list",
-        name: "customElementClass",
-        message: "What custom element base are you building from?",
+        name: "license",
+        message: "What license do you want to use?",
         store: true,
+        default: "apache2",
         choices: [
           {
-            name: "VanillaJS, pure HTMLElement",
-            value: "HTMLElement"
+            name: "Apache 2.0",
+            value: "apache2"
           },
           {
-            name: "RHElement",
-            value: "RHElement"
+            name: "MIT",
+            value: "mit"
           },
           {
-            name: "LitElement",
-            value: "LitElement"
-          },
-          {
-            name: "Polymer (3)",
-            value: "PolymerElement"
+            name: "BSD 3 clause",
+            value: "msd3"
           }
         ]
       },
@@ -86,6 +91,123 @@ module.exports = class extends Generator {
             value: null
           }
         ]
+      },
+      {
+        type: "list",
+        name: "customElementClass",
+        message: "What custom element base are you building from?",
+        store: true,
+        choices: [
+          {
+            name: "VanillaJS, pure HTMLElement",
+            value: "HTMLElement"
+          },
+          {
+            name: "RHElement",
+            value: "RHElement"
+          },
+          {
+            name: "LitElement",
+            value: "LitElement"
+          },
+          {
+            name: "Polymer (3)",
+            value: "PolymerElement"
+          }
+        ]
+      },
+      {
+        type: "list",
+        name: "addProps",
+        message: "Do you want to add properties to your custom element?",
+        store: true,
+        choices: [
+          {
+            name: "Yes",
+            value: true
+          },
+          {
+            name: "No",
+            value: false
+          }
+        ]
+      },
+      /** TODO add a loop for mixing data into each of the properties */
+      {
+        type: 'recursive',
+        message: 'Add a new property to this element ?',
+        name: 'propsList',
+        when: answers => {
+          return answers.addProps;
+        },
+        prompts: [
+          {
+            type: 'input',
+            name: 'name',
+            message: "Name of the property",
+            desc: "Valid examples: title, firstName, lastName, thingsAndStuff",
+            validate: function (value) {
+              if ((/\w/).test(value)) { return true; }
+              return 'Property name must be a single word';
+            }
+          },
+          {
+            type: 'list',
+            name: 'type',
+            message: "What type of value is this",
+            desc: "What type of value is this",
+            default: "String",
+            choices: [
+              {
+                name: "String",
+                value: "String"
+              },
+              {
+                name: "Boolean",
+                value: "Boolean"
+              },
+              {
+                name: "Number",
+                value: "Number"
+              },
+              {
+                name: "Object",
+                value: "Object"
+              },
+              {
+                name: "Array",
+                value: "Array"
+              },
+              {
+                name: "Date",
+                value: "Date"
+              },
+            ]
+          },
+          {
+            type: 'input',
+            name: 'value',
+            message: "Default value",
+            desc: "leave blank for none",
+          },
+          {
+            type: 'list',
+            name: 'reflectToAttribute',
+            message: "Reflect value to attribute?",
+            desc: "This is useful when you want to use this value in css / theming.",
+            default: false,
+            choices: [
+              {
+                name: "No",
+                value: false
+              },
+              {
+                name: "Yes",
+                value: true
+              },
+            ]
+          },
+        ]
       }
     ]).then(answers => {
       let name = answers.name.split("-")[1];
@@ -94,8 +216,11 @@ module.exports = class extends Generator {
         year: new Date().getFullYear(),
         author: answers.author,
         copyrightOwner: answers.copyrightOwner,
+        license: answers.license,
         name: answers.name,
         elementName: answers.name,
+        addProps: answers.addProps,
+        propsList: answers.propsList,
         customElementClass: answers.customElementClass,
         elementClassName: _.chain(answers.name)
           .camelCase()
@@ -132,9 +257,24 @@ module.exports = class extends Generator {
     );
 
     this.fs.copyTpl(
+      this.templatePath(`licenses/${this.props.license}.md`),
+      this.destinationPath(
+        `${this.props.elementName}/LICENSE.md`
+      ),
+      this.props
+    );
+    
+    this.fs.copyTpl(
       this.templatePath(`src/${this.props.customElementClass}.js`),
       this.destinationPath(
         `${this.props.elementName}/src/${this.props.elementName}.js`
+      ),
+      this.props
+    );
+    this.fs.copyTpl(
+      this.templatePath(`src/properties.json`),
+      this.destinationPath(
+        `${this.props.elementName}/src/${this.props.elementName}-properties.json`
       ),
       this.props
     );
@@ -182,11 +322,6 @@ module.exports = class extends Generator {
     this.fs.copy(
       this.templatePath(".*"),
       this.destinationPath(`${this.props.elementName}`)
-    );
-
-    this.fs.copy(
-      this.templatePath("LICENSE.txt"),
-      this.destinationPath(`${this.props.elementName}/LICENSE.txt`)
     );
 
     if (this.props.useSass) {
