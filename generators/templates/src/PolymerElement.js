@@ -22,6 +22,14 @@
 
 import { html, PolymerElement } from '@polymer/polymer/polymer-element.js';
 
+/**
+ * `<%= elementName %>`
+ *
+ *
+ * @customElement
+ * @polymer
+ * @demo demo/index.html
+ */
 class <%= elementClassName %> extends <%= customElementClass %> {
   static get tag() {
     return "<%= elementName %>";
@@ -47,13 +55,11 @@ class <%= elementClassName %> extends <%= customElementClass %> {
       },
     };
   }
-
-  // static get observedAttributes() {
-  //   return [];
-  // }
-
-  constructor() {
-    super(<%= elementClassName %>.tag);
+  /**
+   * life cycle, element is afixed to the DOM
+   */
+  connectedCallback() {
+    super.connectedCallback();
   }
   /**
    * life cycle, element is removed from the DOM
@@ -61,16 +67,5 @@ class <%= elementClassName %> extends <%= customElementClass %> {
   disconnectedCallback() {
 
   }
-  
-  /**
-   * life cycle, element is afixed to the DOM
-   */
-  connectedCallback() {
-    super.connectedCallback();
-  }
-
-  // disconnectedCallback() {}
-
-  // attributeChangedCallback(attr, oldValue, newValue) {}
 }
 window.customElements.define(<%= elementClassName %>.tag, <%= elementClassName %>);
