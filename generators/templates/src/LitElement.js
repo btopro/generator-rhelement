@@ -68,9 +68,9 @@ class <%= elementClassName %> extends <%= customElementClass %> {
   //   return [];
   // }
 
-  constructor() {
-    super(<%= elementClassName %>.tag);
-  },
+  //constructor() {
+  //  super();
+  //},
 
   // connectedCallback() {
   //   super.connectedCallback();
@@ -80,4 +80,4 @@ class <%= elementClassName %> extends <%= customElementClass %> {
 
   // attributeChangedCallback(attr, oldValue, newValue) {}
 }
-customElements.define(<%= elementClassName %>.tag, <%= elementClassName %>);
+customElements.define("<%= elementName %>", <%= elementClassName %>);
