@@ -32,7 +32,12 @@ class <%= elementClassName %> extends <%= customElementClass %> {
   constructor(delayRender = false) {
     super();
     this.tag = <%= elementClassName %>.tag;
-
+    let obj = <%= elementClassName %>.properties;
+    for (let p in obj) {
+      if (obj.hasOwnProperty(p)) {
+        this[p] = obj[p].value;
+      }
+    }
     this._queue = [];
     this.template = document.createElement("template");
 

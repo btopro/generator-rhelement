@@ -62,6 +62,13 @@ class <%= elementClassName %> extends <%= customElementClass %> {
 
   constructor() {
     super(<%= elementClassName %>.tag);
+    // map properties object to local values
+    let obj = <%= elementClassName %>.properties;
+    for (let p in obj) {
+      if (obj.hasOwnProperty(p)) {
+        this[p] = obj[p].value;
+      }
+    }
   }
 
   // static get observedAttributes() {
