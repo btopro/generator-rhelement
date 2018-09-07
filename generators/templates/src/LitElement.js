@@ -79,20 +79,5 @@ class <%= elementClassName %> extends <%= customElementClass %> {
   // disconnectedCallback() {}
 
   // attributeChangedCallback(attr, oldValue, newValue) {}
-
-  // Render method should return a `TemplateResult` using the provided lit-html `html` tag function
-  render() {
-    return html`
-      <style>
-        :host {
-          display: block;
-        }
-        :host([hidden]) {
-          display: none;
-        }
-      </style>
-      <slot></slot>
-    `;
-  }
 }
 customElements.define(<%= elementClassName %>.tag, <%= elementClassName %>);

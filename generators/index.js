@@ -246,7 +246,20 @@ module.exports = class extends Generator {
         sassLibraryPath: false,
         generatorRhelementVersion: packageJson.version
       };
-
+      // mix in the template output related to customElementClass
+      switch (answers.customElementClass) {
+        case 'LitElement':
+          this.props.templateReturnFunctionPart = "render() {\n    return html";
+        break;
+        case 'PolymerElement':
+          this.props.templateReturnFunctionPart = "static get template() {\n    return html";
+        break;
+        case 'HTMLElement':
+        case 'RHElement':
+        default:
+          this.props.templateReturnFunctionPart = "get html() {\n    return ";
+        break;
+      }
       if (answers.useSass) {
         if (answers.sassLibrary && answers.sassLibrary.pkg) {
           this.props.sassLibraryPkg = answers.sassLibrary.pkg;

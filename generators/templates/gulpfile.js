@@ -75,12 +75,11 @@ gulp.task("merge", () => {
         cssResult = stripCssComments(cssResult).trim();
 
         return `${classStatement}
-  get html() {
-    return \`
-<style>
-${cssResult}
-</style>
-${html}\`;
+  <%= templateReturnFunctionPart %>\`
+  <style>
+    ${cssResult}
+  </style>
+  ${html}\`;
   }
 `;
       })
