@@ -1,1 +1,1 @@
-<%= propsListString %>
+<%- propsListString %>
