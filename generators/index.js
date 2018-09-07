@@ -51,7 +51,7 @@ module.exports = class extends Generator {
           },
           {
             name: "BSD 3 clause",
-            value: "msd3"
+            value: "bsd3"
           }
         ]
       },
@@ -221,6 +221,7 @@ module.exports = class extends Generator {
         elementName: answers.name,
         addProps: answers.addProps,
         propsList: answers.propsList,
+        propsListString: JSON.stringify(answers.propsList, null, '  '),
         customElementClass: answers.customElementClass,
         elementClassName: _.chain(answers.name)
           .camelCase()
