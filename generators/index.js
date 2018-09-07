@@ -221,6 +221,8 @@ module.exports = class extends Generator {
         ]
       }
     ]).then(answers => {
+      // ensure answer is in kebabcase and lowercase
+      answers.name = _.kebabCase(answers.name).toLowerCase();
       let name = answers.name.split("-")[1];
 
       this.props = {
@@ -233,6 +235,8 @@ module.exports = class extends Generator {
         addProps: answers.addProps,
         propsList: answers.propsList,
         propsListString: JSON.stringify(answers.propsList, null, '  '),
+        storyPropDeclaration: '',
+        storyHTMLProps: '',
         customElementClass: answers.customElementClass,
         elementClassName: _.chain(answers.name)
           .camelCase()
@@ -246,6 +250,13 @@ module.exports = class extends Generator {
         sassLibraryPath: false,
         generatorRhelementVersion: packageJson.version
       };
+      // generate a string that can pull together the values needed for an HTML string
+      _.forEach(this.props.propsList, (prop) => {
+        this.props.storyPropDeclaration += '  const ' + prop.name + ' = text("' + prop.name + '", "' + prop.value + '");' + "\n";
+      });
+      _.forEach(this.props.propsList, (prop) => {
+        this.props.storyHTMLProps += _.kebabCase(prop.name) + '="${' + prop.name + '}"; ';
+      });
       // mix in the template output related to customElementClass
       switch (answers.customElementClass) {
         case 'LitElement':
@@ -313,6 +324,12 @@ module.exports = class extends Generator {
     this.fs.copyTpl(
       this.templatePath("gulpfile.js"),
       this.destinationPath(`${this.props.elementName}/gulpfile.js`),
+      this.props
+    );
+
+    this.fs.copyTpl(
+      this.templatePath("rollup.config.js"),
+      this.destinationPath(`${this.props.elementName}/rollup.config.js`),
       this.props
     );
 
