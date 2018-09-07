@@ -36,7 +36,7 @@ gulp.task("merge", () => {
   return gulp
     .src("./src/<%= elementName %>.js")
     .pipe(
-      replace(/extends\s+RHElement\s+{/g, (classStatement, character, jsFile) => {
+    replace(/extends\s+<%= customElementClass %>\s+{/g, (classStatement, character, jsFile) => {
         // extract the templateUrl and styleUrl with regex.  Would prefer to do
         // this by require'ing <%= elementName %>.js and asking it directly, but without
         // node.js support for ES modules, we're stuck with this.
@@ -44,7 +44,7 @@ gulp.task("merge", () => {
         const [
           ,
           templateUrl
-        ] = /get\s+templateUrl\([^)]*\)\s*{\s*return\s+"([^"]+)"/.exec(
+        ] = /templateUrl\([^)]*\)\s*{\s*return\s+"([^"]+)"/.exec(
           oneLineFile
         );
 
@@ -58,7 +58,7 @@ gulp.task("merge", () => {
         const [
           ,
           styleUrl
-        ] = /get\s+styleUrl\([^)]*\)\s*{\s*return\s+"([^"]+)"/.exec(
+        ] = /styleUrl\([^)]*\)\s*{\s*return\s+"([^"]+)"/.exec(
           oneLineFile
         );
 
