@@ -15,7 +15,7 @@ module.exports = class extends Generator {
       {
         type: "input",
         name: "name",
-        message: "Your element name",
+        message: "Element name",
         validate: function (value) {
           if ((/([a-z]*)-([a-z]*)/).test(value)) { return true; }
           return 'name requires a hyphen and all lowercase';
@@ -24,20 +24,20 @@ module.exports = class extends Generator {
       {
         type: "input",
         name: "author",
-        message: "Author name",
+        message: "Author of this element",
         store: true
       },
       {
         type: "input",
         name: "copyrightOwner",
-        message: "Copyright owner",
+        message: "Copyright owner of this work",
         store: true,
         default: "Red Hat, Inc."
       },
       {
         type: "list",
         name: "license",
-        message: "What license do you want to use?",
+        message: "Software License to use",
         store: true,
         default: "apache2",
         choices: [
@@ -58,7 +58,7 @@ module.exports = class extends Generator {
       {
         type: "list",
         name: "useSass",
-        message: "Do you want to use Sass with this element?",
+        message: "Do you want to use Sass in this element?",
         store: true,
         choices: [
           {
@@ -95,23 +95,23 @@ module.exports = class extends Generator {
       {
         type: "list",
         name: "customElementClass",
-        message: "What custom element base are you building from?",
+        message: "Custom element base to build off of",
         store: true,
         choices: [
           {
-            name: "VanillaJS, pure HTMLElement",
+            name: "VanillaJS, a pure HTMLElement developer invokation",
             value: "HTMLElement"
           },
           {
-            name: "RHElement",
+            name: "RHElement, lightweight wrapper on Vanilla",
             value: "RHElement"
           },
           {
-            name: "LitElement",
+            name: "LitElement, data binding and template wrapper work",
             value: "LitElement"
           },
           {
-            name: "Polymer (3)",
+            name: "Polymer (3), data binding and lots of utilities to build complexity",
             value: "PolymerElement"
           }
         ]
@@ -119,7 +119,7 @@ module.exports = class extends Generator {
       {
         type: "list",
         name: "addProps",
-        message: "Do you want to add properties to your custom element?",
+        message: "Do you want custom properties? (typically yes)",
         store: true,
         choices: [
           {
@@ -132,7 +132,6 @@ module.exports = class extends Generator {
           }
         ]
       },
-      /** TODO add a loop for mixing data into each of the properties */
       {
         type: 'recursive',
         message: 'Add a new property to this element ?',
@@ -144,8 +143,7 @@ module.exports = class extends Generator {
           {
             type: 'input',
             name: 'name',
-            message: "Name of the property",
-            desc: "Valid examples: title, firstName, lastName, thingsAndStuff",
+            message: "Name of the property (examples: title, fistName, dataUrl)",
             validate: function (value) {
               if ((/\w/).test(value)) { return true; }
               return 'Property name must be a single word';
@@ -154,32 +152,31 @@ module.exports = class extends Generator {
           {
             type: 'list',
             name: 'type',
-            message: "What type of value is this",
-            desc: "What type of value is this",
+            message: "What 'type' of value is this (the way it is used as data)",
             default: "String",
             choices: [
               {
-                name: "String",
+                name: "String, text based input",
                 value: "String"
               },
               {
-                name: "Boolean",
+                name: "Boolean, true/false value",
                 value: "Boolean"
               },
               {
-                name: "Number",
+                name: "Number, pure number like 54",
                 value: "Number"
               },
               {
-                name: "Object",
+                name: "Object, complex item storing multiple types",
                 value: "Object"
               },
               {
-                name: "Array",
+                name: "Array, list of types",
                 value: "Array"
               },
               {
-                name: "Date",
+                name: "Date, javascript date based object",
                 value: "Date"
               },
             ]
@@ -187,14 +184,12 @@ module.exports = class extends Generator {
           {
             type: 'input',
             name: 'value',
-            message: "Default value",
-            desc: "leave blank for none",
+            message: "Default value (leave blank for none)",
           },
           {
             type: 'list',
             name: 'reflectToAttribute',
-            message: "Reflect value to attribute?",
-            desc: "This is useful when you want to use this value in css / theming.",
+            message: "Make available in css styles? [name=\"stuff\"] { color: blue; }",
             default: false,
             choices: [
               {
@@ -204,6 +199,22 @@ module.exports = class extends Generator {
               {
                 name: "Yes",
                 value: true
+              },
+            ]
+          },
+          {
+            type: 'list',
+            name: 'observer',
+            message: "Notice changes to this property?",
+            default: true,
+            choices: [
+              {
+                name: "Yes",
+                value: true
+              },
+              {
+                name: "No",
+                value: false
               },
             ]
           },
