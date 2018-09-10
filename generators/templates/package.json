@@ -21,6 +21,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "babel-plugin-transform-custom-element-classes": "^0.1.0",
     <% if (sassLibraryPkg) { %>"<%= sassLibraryPkg %>": "*",<% } %>
     "@rhelements/rhelement": "*"
   },
