@@ -10,7 +10,9 @@
     "type": "git",
     "url": ""
   },
-  "main": "index.js",
+  "main": "<%= elementName %>.umd.js",
+  "module": "<%= elementName %>.js",
+  "es2015": "<%= elementName %>.js",
   "scripts": {
     "build": "../../node_modules/.bin/gulp && ../../node_modules/.bin/rollup -c && ../../node_modules/.bin/prettier --ignore-path ../../.prettierignore --write '**/*.{js,json}'",
     "dev": "../../node_modules/.bin/gulp dev",
