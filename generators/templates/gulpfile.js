@@ -30,7 +30,7 @@ gulp.task("compile", () => {
 });
 
 gulp.task("watch", () => {
-  return gulp.watch("./src/*", gulp.series("merge", "compile"));
+  return gulp.watch("./src/*", gulp.series("merge", "copy", "compile"));
 });
 
 gulp.task("merge", () => {

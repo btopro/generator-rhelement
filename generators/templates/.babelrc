@@ -1,8 +1,9 @@
 {
-  "presets": [["env", { "modules": false }]],
-  "plugins": [
-    "external-helpers",
-    "transform-custom-element-classes",
-    "transform-es2015-classes"
+  "presets": [
+    ["env",
+      {
+        "modules": false
+      }
+    ]
   ]
 }
