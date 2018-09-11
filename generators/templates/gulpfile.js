@@ -99,7 +99,11 @@ ${html}\`;
 gulp.task("copy", () => {
   return gulp
     .src("./<%= elementName %>.js")
-    .pipe(gulpCopy("./<%= elementName %>.es6.js"))
+    .pipe(
+      rename({
+        suffix: ".es5"
+      })
+    )
     .pipe(gulp.dest("./"));
 });
 
