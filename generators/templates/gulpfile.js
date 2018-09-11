@@ -137,17 +137,13 @@ gulp.task("mergees", () => {
           oneLineFile
         );
         const styleFilePath = path.join("./src", styleUrl);
-<% _ if (useSass) {
-        _ %>
+<%_ if (useSass) { _%>
           let cssResult = sass.renderSync({
             file: styleFilePath
           }).css;
-<% _
-        } else {
-        _ %>
+<%_ } else { _%>
           let cssResult = fs.readFileSync(styleFilePath);
-<% _
-        } _ %>
+<%_ } _%>
           cssResult = stripCssComments(cssResult).trim();
         return `${classStatement}
   <%= templateReturnFunctionPart %>\`
