@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 
 const gulp = require("gulp");
+const gulpCopy = require('gulp-copy');
 const rename = require("gulp-rename");
 const replace = require("gulp-replace");
 const stripCssComments = require("strip-css-comments");
@@ -96,6 +97,18 @@ ${html}\`;
     .pipe(gulp.dest("./"));
 });
 
-gulp.task("default", gulp.series("merge", "compile"));
+gulp.task("copy", () => {
+  return gulp
+    .src("./src/<%= elementName %>.js")
+    .pipe(gulpCopy('.'))
+    .pipe(
+      rename({
+        suffix: ".es6"
+      })
+    )
+    .pipe(gulp.dest("./"));
+});
 
-gulp.task("dev", gulp.series("merge", "compile", "watch"));
+gulp.task("default", gulp.series("merge", "copy", "compile"));
+
+gulp.task("dev", gulp.series("merge", "copy", "compile", "watch"));
